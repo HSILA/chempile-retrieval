@@ -4,3 +4,6 @@
 datasets
 mteb
 sentence-transformers
+
+# Required by nomic-ai/nomic-embed-text-v1 when using trust_remote_code
+einops
