@@ -56,20 +56,9 @@ def main() -> None:
     )
     # NOTE: This project always enables trust_remote_code for model loading.
     # ChEmbed + Nomic require it, and we want one consistent behavior.
-    ap.add_argument(
-        "--trust-remote-code",
-        action="store_true",
-        default=True,
-        help="(Default: true) Allow custom model code from HuggingFace.",
-    )
-    ap.add_argument(
-        "--no-trust-remote-code",
-        action="store_true",
-        help="Disable trust_remote_code (not recommended; may break model loading).",
-    )
     args = ap.parse_args()
 
-    trust_remote_code = bool(args.trust_remote_code) and not bool(args.no_trust_remote_code)
+    trust_remote_code = True
 
     task_map = {
         "A1": ChempileRetrievalA1,

@@ -61,7 +61,7 @@ HF_TOKEN="<your_hf_token>" .venv/bin/python scripts/run_evaluation.py \
 ```
 
 - `--tasks` accepts a comma-separated list of variants.
-- `trust_remote_code` is enabled by default (required for nomic + ChEmbed).
+- `trust_remote_code` is **always enabled** for model loading (required for nomic + ChEmbed).
 
 Outputs are written to:
 
