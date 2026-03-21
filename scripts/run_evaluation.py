@@ -14,7 +14,12 @@ Notes:
 from __future__ import annotations
 
 import argparse
+import sys
 from pathlib import Path
+
+# Ensure repo root is importable when running as a script
+REPO_ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(REPO_ROOT))
 
 from mteb import MTEB
 from mteb.models import SentenceTransformerEncoderWrapper
@@ -36,27 +41,51 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, help="HF model name (SentenceTransformer compatible)")
     ap.add_argument("--batch-size", type=int, default=32)
+    ap.add_argument(
+        "--tasks",
+        default="A1,A2,A3,B1,B2,B3,C1,C2,C3",
+        help="Comma-separated list of variants to run (e.g. A1,B3,C3). Default: all 9.",
+    )
+    ap.add_argument(
+        "--trust-remote-code",
+        action="store_true",
+        help="Allow custom model code from HuggingFace (required for some models like nomic-embed-text-v1).",
+    )
     args = ap.parse_args()
 
-    tasks = [
-        ChempileRetrievalA1(),
-        ChempileRetrievalA2(),
-        ChempileRetrievalA3(),
-        ChempileRetrievalB1(),
-        ChempileRetrievalB2(),
-        ChempileRetrievalB3(),
-        ChempileRetrievalC1(),
-        ChempileRetrievalC2(),
-        ChempileRetrievalC3(),
-    ]
+    task_map = {
+        "A1": ChempileRetrievalA1,
+        "A2": ChempileRetrievalA2,
+        "A3": ChempileRetrievalA3,
+        "B1": ChempileRetrievalB1,
+        "B2": ChempileRetrievalB2,
+        "B3": ChempileRetrievalB3,
+        "C1": ChempileRetrievalC1,
+        "C2": ChempileRetrievalC2,
+        "C3": ChempileRetrievalC3,
+    }
 
-    model = SentenceTransformerEncoderWrapper(args.model, batch_size=args.batch_size)
+    selected = [t.strip() for t in args.tasks.split(",") if t.strip()]
+    unknown = [t for t in selected if t not in task_map]
+    if unknown:
+        raise SystemExit(f"Unknown tasks: {unknown}. Valid: {sorted(task_map.keys())}")
+
+    tasks = [task_map[t]() for t in selected]
+
+    model = SentenceTransformerEncoderWrapper(
+        args.model,
+        trust_remote_code=args.trust_remote_code,
+    )
 
     out_dir = Path(__file__).resolve().parents[1] / "results" / args.model.replace("/", "__")
     out_dir.mkdir(parents=True, exist_ok=True)
 
     mteb = MTEB(tasks=tasks)
-    mteb.run(model, output_folder=str(out_dir))
+    mteb.run(
+        model,
+        output_folder=str(out_dir),
+        encode_kwargs={"batch_size": args.batch_size},
+    )
 
 
 if __name__ == "__main__":

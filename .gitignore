@@ -1,4 +1,17 @@
-# Internal development notes - do not push to HuggingFace Hub
-# This file stays in GitHub repo but excluded from HF dataset
+# Internal development notes
 SPEC.md
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+
+# Envs
+.venv/
+.venv-*/
+
+# Outputs
+results/
 
