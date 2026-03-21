@@ -27,7 +27,7 @@ run_model () {
 }
 
 # 1) Nomic (requires trust_remote_code)
-run_model "nomic-ai/nomic-embed-text-v1" 4 "--trust-remote-code"
+run_model "nomic-ai/nomic-embed-text-v1" 4
 
 # 2-5) ChEmbed variants
 run_model "BASF-AI/ChEmbed-vanilla" 4

@@ -54,12 +54,22 @@ def main() -> None:
         default="A1,A2,A3,B1,B2,B3,C1,C2,C3",
         help="Comma-separated list of variants to run (e.g. A1,B3,C3). Default: all 9.",
     )
+    # NOTE: This project always enables trust_remote_code for model loading.
+    # ChEmbed + Nomic require it, and we want one consistent behavior.
     ap.add_argument(
         "--trust-remote-code",
         action="store_true",
-        help="Allow custom model code from HuggingFace (required for some models like nomic-embed-text-v1).",
+        default=True,
+        help="(Default: true) Allow custom model code from HuggingFace.",
+    )
+    ap.add_argument(
+        "--no-trust-remote-code",
+        action="store_true",
+        help="Disable trust_remote_code (not recommended; may break model loading).",
     )
     args = ap.parse_args()
+
+    trust_remote_code = bool(args.trust_remote_code) and not bool(args.no_trust_remote_code)
 
     task_map = {
         "A1": ChempileRetrievalA1,
@@ -89,13 +99,13 @@ def main() -> None:
         model = ChEmbedWrapper(
             model_name,
             revision=args.revision,
-            trust_remote_code=args.trust_remote_code,
+            trust_remote_code=trust_remote_code,
         )
     else:
         model = mteb.get_model(
             model_name,
             revision=args.revision,
-            trust_remote_code=args.trust_remote_code,
+            trust_remote_code=trust_remote_code,
         )
 
     inner = getattr(model, "model", model)
