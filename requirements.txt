@@ -1,0 +1,6 @@
+# Stage 2 dependencies (evaluation)
+# Pinning can be added later once we confirm versions.
+
+datasets
+mteb
+sentence-transformers
