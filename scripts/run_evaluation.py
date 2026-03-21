@@ -21,9 +21,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
-import mteb
 from mteb import MTEB
 
+from chempile_retrieval.model_wrappers import ChEmbedWrapper, NomicWrapper
 from chempile_retrieval.tasks import (
     ChempileRetrievalA1,
     ChempileRetrievalA2,
@@ -41,6 +41,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", required=True, help="HF model name")
     ap.add_argument("--revision", default=None, help="Optional HF revision/tag/commit")
+    ap.add_argument(
+        "--max-seq-length",
+        type=int,
+        default=2048,
+        help="If supported by the underlying model, set max_seq_length (default: 2048)",
+    )
     ap.add_argument("--batch-size", type=int, default=32)
     ap.add_argument(
         "--tasks",
@@ -73,19 +79,34 @@ def main() -> None:
 
     tasks = [task_map[t]() for t in selected]
 
-    # IMPORTANT: nomic models (and some others) require the MTEB model loader,
-    # not the SentenceTransformer wrapper.
-    # This mirrors the working setup used in ~/research/ChEmbed-Res/nomic_bench.py.
-    model = mteb.get_model(
-        args.model,
-        revision=args.revision,
-        trust_remote_code=args.trust_remote_code,
-    )
+    # IMPORTANT: Nomic-family models require prompt injection (search_query/search_document)
+    # for correct retrieval behavior. We use a wrapper equivalent to:
+    # https://github.com/HSILA/ChEmbed-Res/blob/main/ChEmbedWrapper.py
+    model_name = args.model
 
-    # If the underlying model exposes max_seq_length, match the intended 2048 context.
+    if "BASF-AI/ChEmbed" in model_name:
+        model = ChEmbedWrapper(
+            model_name,
+            revision=args.revision,
+            trust_remote_code=args.trust_remote_code,
+        )
+    elif model_name.startswith("nomic-") or model_name.startswith("nomic-ai/"):
+        model = NomicWrapper(
+            model_name,
+            revision=args.revision,
+            trust_remote_code=args.trust_remote_code,
+        )
+    else:
+        # Fallback for other SentenceTransformer-compatible models
+        model = NomicWrapper(
+            model_name,
+            revision=args.revision,
+            trust_remote_code=args.trust_remote_code,
+        )
+
     inner = getattr(model, "model", model)
     if hasattr(inner, "max_seq_length"):
-        inner.max_seq_length = 2048
+        inner.max_seq_length = args.max_seq_length
 
     out_dir = Path(__file__).resolve().parents[1] / "results" / args.model.replace("/", "__")
     out_dir.mkdir(parents=True, exist_ok=True)
