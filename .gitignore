@@ -13,5 +13,6 @@ __pycache__/
 .venv-*/
 
 # Outputs
-results/
+# NOTE: results/ is intentionally tracked in git for this project.
+# Do not ignore it.
 
