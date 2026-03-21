@@ -63,6 +63,7 @@ Mimic `BASF-AI/ChemRxivRetrieval` structure:
 ```
 - Qrels mapping queries to corpus docs
 - Binary relevance (score = 1)
+- **Important:** Each query maps to exactly ONE corpus document (1:1 mapping)
 
 ## File Organization
 
@@ -93,6 +94,34 @@ chempile-retrieval/
 ```
 
 **Total:** 9 subdirectories × 3 files = 27 JSONL files
+
+## Retrieval Task Design Notes
+
+### 1:1 Mapping vs Multi-Relevant
+- **Chempile:** Each query maps to exactly ONE relevant document (1:1)
+- **ChemRxivRetrieval:** Also 1:1 (5k queries → 5k relevant docs in 70k corpus)
+
+### Corpus Size Impact
+- **ChemRxivRetrieval:** 5k queries, 70k corpus (7% relevant density)
+- **Chempile:** ~N queries, ~N corpus (100% relevant density - each doc is relevant to exactly one query)
+
+**Evaluation is identical** (MTEB uses pytrec_eval):
+1. For each query, retrieve top-k from corpus
+2. Check if relevant doc(s) appear in top-k
+3. Compute metrics (NDCG@k, Recall@k, MRR@k, etc.)
+
+**Difficulty difference:**
+- Larger corpus with sparse relevance = harder (more distractors)
+- Smaller corpus with dense relevance = easier
+- But evaluation **logic** is the same
+
+**Key insight:** The number of queries and corpus size being equal does NOT change the task structure. Each query is evaluated independently against the full corpus.
+
+### What Makes This Different from ChemRxivRetrieval
+- **Domain:** StackExchange Q/A (not scientific papers)
+- **Query types:** title, question body, or combined
+- **Corpus:** Full answer texts (not paragraphs)
+- **Scale:** TBD (depends on source data filtering)
 
 ## Quality Controls
 
