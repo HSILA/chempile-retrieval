@@ -23,7 +23,8 @@ sys.path.insert(0, str(REPO_ROOT))
 
 from mteb import MTEB
 
-from chempile_retrieval.model_wrappers import ChEmbedWrapper, NomicWrapper
+import mteb
+from chempile_retrieval.model_wrappers import ChEmbedWrapper
 from chempile_retrieval.tasks import (
     ChempileRetrievalA1,
     ChempileRetrievalA2,
@@ -79,9 +80,9 @@ def main() -> None:
 
     tasks = [task_map[t]() for t in selected]
 
-    # IMPORTANT: Nomic-family models require prompt injection (search_query/search_document)
-    # for correct retrieval behavior. We use a wrapper equivalent to:
-    # https://github.com/HSILA/ChEmbed-Res/blob/main/ChEmbedWrapper.py
+    # Mirror ChEmbed-Res behavior:
+    # - ChEmbed models use our ChEmbedWrapper (prompt injection + optional ChemVocab tokenizer).
+    # - Everything else (including nomic) uses mteb.get_model(...).
     model_name = args.model
 
     if "BASF-AI/ChEmbed" in model_name:
@@ -90,15 +91,8 @@ def main() -> None:
             revision=args.revision,
             trust_remote_code=args.trust_remote_code,
         )
-    elif model_name.startswith("nomic-") or model_name.startswith("nomic-ai/"):
-        model = NomicWrapper(
-            model_name,
-            revision=args.revision,
-            trust_remote_code=args.trust_remote_code,
-        )
     else:
-        # Fallback for other SentenceTransformer-compatible models
-        model = NomicWrapper(
+        model = mteb.get_model(
             model_name,
             revision=args.revision,
             trust_remote_code=args.trust_remote_code,
