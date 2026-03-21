@@ -105,8 +105,8 @@ def main() -> None:
     out_dir = Path(__file__).resolve().parents[1] / "results" / args.model.replace("/", "__")
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    mteb = MTEB(tasks=tasks)
-    mteb.run(
+    runner = MTEB(tasks=tasks)
+    runner.run(
         model,
         output_folder=str(out_dir),
         encode_kwargs={"batch_size": args.batch_size},
