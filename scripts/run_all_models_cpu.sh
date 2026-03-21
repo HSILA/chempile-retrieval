@@ -8,7 +8,7 @@ set -euo pipefail
 # Notes:
 # - CPU-only machine assumed.
 # - This writes outputs under ./results/<model_name_with__>/
-# - For models that require it, we pass --trust-remote-code.
+# - trust_remote_code is hardcoded ON in scripts/run_evaluation.py (no flags needed here).
 
 PY=".venv/bin/python"
 TASKS="A1,A2,A3,B1,B2,B3,C1,C2,C3"
@@ -16,17 +16,15 @@ TASKS="A1,A2,A3,B1,B2,B3,C1,C2,C3"
 run_model () {
   local model="$1"
   local batch="$2"
-  local trust_flag="${3:-}"
 
   echo "=== Running model: ${model} (batch_size=${batch}) ==="
   ${PY} scripts/run_evaluation.py \
     --model "${model}" \
     --tasks "${TASKS}" \
-    --batch-size "${batch}" \
-    ${trust_flag}
+    --batch-size "${batch}"
 }
 
-# 1) Nomic (requires trust_remote_code)
+# 1) Nomic
 run_model "nomic-ai/nomic-embed-text-v1" 4
 
 # 2-5) ChEmbed variants
