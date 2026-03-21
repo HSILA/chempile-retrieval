@@ -35,12 +35,6 @@ qrels = ds["default"]    # {query-id, corpus-id, score}
 | C2 | All three | question |
 | C3 | All three | title + question |
 
-## Status
-
-🚧 **In Progress** - Specification complete, implementation pending
-
-See [SPEC.md](./SPEC.md) for full technical details.
-
 ## Source Data
 
 - **Dataset:** [jablonkagroup/chempile-reasoning](https://huggingface.co/datasets/jablonkagroup/chempile-reasoning)

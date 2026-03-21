@@ -1,0 +1,4 @@
+# Internal development notes - do not push to HuggingFace Hub
+# This file stays in GitHub repo but excluded from HF dataset
+SPEC.md
+
