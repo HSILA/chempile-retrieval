@@ -21,8 +21,8 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT))
 
+import mteb
 from mteb import MTEB
-from mteb.models import SentenceTransformerEncoderWrapper
 
 from chempile_retrieval.tasks import (
     ChempileRetrievalA1,
@@ -39,7 +39,8 @@ from chempile_retrieval.tasks import (
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--model", required=True, help="HF model name (SentenceTransformer compatible)")
+    ap.add_argument("--model", required=True, help="HF model name")
+    ap.add_argument("--revision", default=None, help="Optional HF revision/tag/commit")
     ap.add_argument("--batch-size", type=int, default=32)
     ap.add_argument(
         "--tasks",
@@ -72,10 +73,19 @@ def main() -> None:
 
     tasks = [task_map[t]() for t in selected]
 
-    model = SentenceTransformerEncoderWrapper(
+    # IMPORTANT: nomic models (and some others) require the MTEB model loader,
+    # not the SentenceTransformer wrapper.
+    # This mirrors the working setup used in ~/research/ChEmbed-Res/nomic_bench.py.
+    model = mteb.get_model(
         args.model,
+        revision=args.revision,
         trust_remote_code=args.trust_remote_code,
     )
+
+    # If the underlying model exposes max_seq_length, match the intended 2048 context.
+    inner = getattr(model, "model", model)
+    if hasattr(inner, "max_seq_length"):
+        inner.max_seq_length = 2048
 
     out_dir = Path(__file__).resolve().parents[1] / "results" / args.model.replace("/", "__")
     out_dir.mkdir(parents=True, exist_ok=True)
