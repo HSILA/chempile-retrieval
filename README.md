@@ -51,7 +51,26 @@ or inline for a single command:
 HF_TOKEN="<your_hf_token>" <command>
 ```
 
-### 3) Run one model on one or more tasks
+### 3) Dump embeddings (for plotting)
+
+On small machines, it can be easier to dump a small sample of embeddings to disk and then plot offline.
+
+```bash
+HF_TOKEN="<your_hf_token>" .venv/bin/python scripts/dump_embeddings.py \
+  --variant A3 \
+  --model nomic-ai/nomic-embed-text-v1 \
+  --n-queries 200 \
+  --n-corpus 200 \
+  --batch-size 4 \
+  --outdir results/embeddings
+```
+
+This writes:
+- `results/embeddings/<variant>/<model_slug>/queries.npy`
+- `results/embeddings/<variant>/<model_slug>/corpus.npy`
+- `results/embeddings/<variant>/<model_slug>/meta.json`
+
+### 4) Run one model on one or more tasks
 
 ```bash
 HF_TOKEN="<your_hf_token>" .venv/bin/python scripts/run_evaluation.py \
