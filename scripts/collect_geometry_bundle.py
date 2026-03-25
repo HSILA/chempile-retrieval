@@ -24,11 +24,11 @@ Notes:
 from __future__ import annotations
 
 import json
+import os
 import random
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -75,7 +75,10 @@ N_CHEMPILE_CORPUS = 10000
 N_ANCHORS_MIXED_CHEM_TOTAL = 2000  # 50/50 chemrxiv vs chempile
 N_ANCHORS_GENERAL_TOTAL = 2000     # 50/50 hotpotqa vs nq
 
-BATCH_SIZE = 8
+# Mac/MPS was OOMing on long corpus passages, so be conservative by default.
+BATCH_SIZE = 4
+# Force CPU by default for robustness on macOS; set COLLECT_GEOMETRY_DEVICE=mps/cuda to override.
+DEVICE = os.environ.get("COLLECT_GEOMETRY_DEVICE", "cpu")
 
 
 def slugify(model_name: str) -> str:
@@ -88,11 +91,12 @@ def _now_utc_iso() -> str:
 
 def load_model(model_name: str):
     trust_remote_code = True
+    common = dict(trust_remote_code=trust_remote_code, device=DEVICE)
     if "BASF-AI/ChEmbed" in model_name:
-        return ChEmbedWrapper(model_name, trust_remote_code=trust_remote_code)
+        return ChEmbedWrapper(model_name, **common)
     if "nomic-ai/" in model_name:
-        return NomicWrapper(model_name, trust_remote_code=trust_remote_code)
-    return mteb.get_model(model_name, trust_remote_code=trust_remote_code)
+        return NomicWrapper(model_name, **common)
+    return mteb.get_model(model_name, **common)
 
 
 def encode_texts(model, texts: List[str], batch_size: int, prompt_name: Optional[str]) -> np.ndarray:
@@ -344,6 +348,8 @@ def main() -> int:
     shared = {
         "seed": SEED,
         "variant": VARIANT,
+        "device": DEVICE,
+        "batch_size": BATCH_SIZE,
         "chemrxiv_dataset": CHEMRXIV_DATASET,
         "general_anchor_datasets": GENERAL_ANCHOR_DATASETS,
         "sizes": {
