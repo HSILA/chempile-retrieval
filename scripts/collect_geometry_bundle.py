@@ -75,7 +75,7 @@ N_CHEMPILE_CORPUS = 10000
 N_ANCHORS_MIXED_CHEM_TOTAL = 2000  # 50/50 chemrxiv vs chempile
 N_ANCHORS_GENERAL_TOTAL = 2000     # 50/50 hotpotqa vs nq
 
-# Mac/MPS was OOMing on long corpus passages, so be conservative by default.
+# Match the repo's CPU-oriented defaults used in run_all_models_cpu.sh.
 BATCH_SIZE = 4
 # Force CPU by default for robustness on macOS; set COLLECT_GEOMETRY_DEVICE=mps/cuda to override.
 DEVICE = os.environ.get("COLLECT_GEOMETRY_DEVICE", "cpu")
