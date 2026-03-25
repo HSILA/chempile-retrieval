@@ -1,0 +1,76 @@
+{
+  "models": {
+    "BASF-AI/ChEmbed-vanilla": {
+      "slug": "BASF-AI__ChEmbed-vanilla",
+      "chempile": {
+        "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/BASF-AI__ChEmbed-vanilla/chempile_A3",
+        "n_queries": 2000,
+        "n_corpus": 3185,
+        "dim": 768
+      },
+      "chemrxiv": {
+        "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/BASF-AI__ChEmbed-vanilla/chemrxiv",
+        "n_queries": 2000,
+        "n_corpus": 10000,
+        "dim": 768
+      },
+      "anchors_mixed_chem": {
+        "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/BASF-AI__ChEmbed-vanilla/anchors_mixed_chem",
+        "n": 2000,
+        "dim": 768
+      },
+      "anchors_general": {
+        "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/BASF-AI__ChEmbed-vanilla/anchors_general",
+        "n": 2000,
+        "dim": 768
+      }
+    },
+    "nomic-ai/nomic-embed-text-v1": {
+      "slug": "nomic-ai__nomic-embed-text-v1",
+      "chempile": {
+        "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/nomic-ai__nomic-embed-text-v1/chempile_A3",
+        "n_queries": 2000,
+        "n_corpus": 3185,
+        "dim": 768
+      },
+      "chemrxiv": {
+        "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/nomic-ai__nomic-embed-text-v1/chemrxiv",
+        "n_queries": 2000,
+        "n_corpus": 10000,
+        "dim": 768
+      },
+      "anchors_mixed_chem": {
+        "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/nomic-ai__nomic-embed-text-v1/anchors_mixed_chem",
+        "n": 2000,
+        "dim": 768
+      },
+      "anchors_general": {
+        "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/nomic-ai__nomic-embed-text-v1/anchors_general",
+        "n": 2000,
+        "dim": 768
+      }
+    }
+  },
+  "seed": 1337,
+  "variant": "A3",
+  "device": "cpu",
+  "batch_size": 4,
+  "chemrxiv_dataset": "BASF-AI/ChemRxivRetrieval",
+  "general_anchor_datasets": [
+    "mteb/hotpotqa",
+    "mteb/nq"
+  ],
+  "sizes": {
+    "chemrxiv": {
+      "queries": 2000,
+      "corpus": 10000
+    },
+    "chempile": {
+      "queries": 2000,
+      "corpus": 10000
+    },
+    "anchors_mixed_chem": 2000,
+    "anchors_general": 2000
+  },
+  "generated_at": "2026-03-25T22:45:01.326536+00:00"
+}

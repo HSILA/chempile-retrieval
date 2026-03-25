@@ -1,0 +1,24 @@
+{
+  "seed": 1337,
+  "variant": "A3",
+  "device": "cpu",
+  "batch_size": 4,
+  "chemrxiv_dataset": "BASF-AI/ChemRxivRetrieval",
+  "general_anchor_datasets": [
+    "mteb/hotpotqa",
+    "mteb/nq"
+  ],
+  "sizes": {
+    "chemrxiv": {
+      "queries": 2000,
+      "corpus": 10000
+    },
+    "chempile": {
+      "queries": 2000,
+      "corpus": 10000
+    },
+    "anchors_mixed_chem": 2000,
+    "anchors_general": 2000
+  },
+  "generated_at": "2026-03-25T22:45:01.326536+00:00"
+}

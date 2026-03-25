@@ -1,0 +1,7 @@
+{
+  "anchor": "anchors_mixed_chem",
+  "model": "nomic-ai/nomic-embed-text-v1",
+  "n": 2000,
+  "dim": 768,
+  "seed": 1337
+}
