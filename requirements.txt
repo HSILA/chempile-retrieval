@@ -1,5 +1,7 @@
-# Stage 2 dependencies (evaluation)
+# Repo dependencies
 # Pinning can be added later once we confirm versions.
+
+# Evaluation / dataset tooling
 
 datasets
 mteb
@@ -7,3 +9,10 @@ sentence-transformers
 
 # Required by nomic-ai/nomic-embed-text-v1 when using trust_remote_code
 einops
+
+# Analysis (geometry bundle)
+
+numpy
+scipy
+scikit-learn
+matplotlib
