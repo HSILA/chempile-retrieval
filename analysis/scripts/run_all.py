@@ -113,10 +113,10 @@ def dataset_source_probe(X: np.ndarray, y: np.ndarray) -> dict:
     X_train_p = pca.fit_transform(X_train)
     X_test_p = pca.transform(X_test)
 
+    # NOTE: keep args minimal for broad scikit-learn compatibility.
     clf = LogisticRegression(
         max_iter=2000,
         n_jobs=-1,
-        multi_class="auto",
     )
     clf.fit(X_train_p, y_train)
     y_pred = clf.predict(X_test_p)
