@@ -5,7 +5,7 @@ MTEB-style retrieval dataset built from StackExchange chemistry/physics Q&A data
 ## Dataset Overview
 
 **9 retrieval datasets** constructed from `jablonkagroup/chempile-reasoning`:
-- 3 domain variants (chemistry / chem+mattermodeling / all three)
+- 3 domain variants (**chemistry** / **chemistry + matter modeling** / **chemistry + matter modeling + physics**)
 - 3 query-corpus pairing modes (title / question / combined)
 
 ## Quick Start
@@ -99,12 +99,12 @@ HF_TOKEN="<your_hf_token>" ./scripts/run_all_models_cpu.sh
 | A1 | Chemistry | title |
 | A2 | Chemistry | question |
 | A3 | Chemistry | title + question |
-| B1 | Chem + Matter | title |
-| B2 | Chem + Matter | question |
-| B3 | Chem + Matter | title + question |
-| C1 | All three | title |
-| C2 | All three | question |
-| C3 | All three | title + question |
+| B1 | Chemistry + matter modeling | title |
+| B2 | Chemistry + matter modeling | question |
+| B3 | Chemistry + matter modeling | title + question |
+| C1 | Chemistry + matter modeling + physics | title |
+| C2 | Chemistry + matter modeling + physics | question |
+| C3 | Chemistry + matter modeling + physics | title + question |
 
 ## Source Data
 
