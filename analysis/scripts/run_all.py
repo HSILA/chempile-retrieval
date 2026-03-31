@@ -20,15 +20,21 @@ import matplotlib.pyplot as plt
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-BUNDLE_DIR = REPO_ROOT / "results" / "geometry_bundle"
+BUNDLE_DIR = REPO_ROOT / "analysis" / "geometry_bundle"
 MANIFEST_PATH = BUNDLE_DIR / "manifest.json"
 RUN_SUMMARY_PATH = BUNDLE_DIR / "run_summary.json"
 
 # Hardcoded model slugs present in the bundle
+# Keep bundle folder slugs (used to locate arrays) but also define clean display names
 MODEL_SLUGS = [
     "BASF-AI__ChEmbed-vanilla",
     "nomic-ai__nomic-embed-text-v1",
 ]
+
+DISPLAY_NAME = {
+    "BASF-AI__ChEmbed-vanilla": "ChEmbed-vanilla",
+    "nomic-ai__nomic-embed-text-v1": "nomic-embed-text-v1",
+}
 
 DATASETS = {
     "chemrxiv": {
@@ -210,10 +216,13 @@ def main():
     assert RUN_SUMMARY_PATH.exists(), f"Missing {RUN_SUMMARY_PATH}"
 
     run_id = _utc_run_id()
-    outdir = REPO_ROOT / "analysis" / "runs" / run_id
+    # Canonical output location (fully flat under analysis/)
+    outdir = REPO_ROOT / "analysis"
     figs = outdir / "figs"
+    artifacts = outdir / "artifacts"
     outdir.mkdir(parents=True, exist_ok=True)
     figs.mkdir(parents=True, exist_ok=True)
+    artifacts.mkdir(parents=True, exist_ok=True)
 
     manifest = json.loads(MANIFEST_PATH.read_text())
     run_summary = json.loads(RUN_SUMMARY_PATH.read_text())
@@ -313,8 +322,8 @@ def main():
             X_probe,
             y_probe,
             label_names,
-            outpath=figs / f"pca_scatter_{model_slug}.png",
-            title=f"PCA scatter (balanced) — {model_slug}",
+            outpath=figs / f"pca_scatter_{DISPLAY_NAME[model_slug]}.png",
+            title=f"PCA scatter (balanced) — {DISPLAY_NAME[model_slug]}",
         )
 
         metrics["models"][model_slug] = model_metrics
@@ -327,9 +336,13 @@ def main():
     mA, mB = MODEL_SLUGS
     mpA, mpB = BUNDLE_DIR / mA, BUNDLE_DIR / mB
 
-    for ds_name, rel in [("chemrxiv_corpus", ("chemrxiv/corpus.npy",)), ("chempile_corpus", ("chempile_A3/corpus.npy",))]:
-        XA = l2_normalize(safe_np(load_memmap(mpA / rel[0])))
-        XB = l2_normalize(safe_np(load_memmap(mpB / rel[0])))
+    for ds_name, rel_path in [
+        ("chemrxiv_corpus", "chemrxiv/corpus.npy"),
+        ("chempile_corpus", "chempile_A3/corpus.npy"),
+        ("anchors_general_corpus", "anchors_general/embeddings.npy"),
+    ]:
+        XA = l2_normalize(safe_np(load_memmap(mpA / rel_path)))
+        XB = l2_normalize(safe_np(load_memmap(mpB / rel_path)))
         assert XA.shape == XB.shape
 
         # CKA (very heavy due to NxN). Guardrail: if N too big, skip.
@@ -349,39 +362,10 @@ def main():
 
     metrics["model_space"] = ms
 
-    (outdir / "metrics.json").write_text(json.dumps(metrics, indent=2))
+    (artifacts / "metrics.json").write_text(json.dumps(metrics, indent=2))
 
-    # Simple markdown report
-    lines = []
-    lines.append(f"# Geometry analysis report\n")
-    lines.append(f"Run id: `{run_id}`\n")
-    lines.append("## Dataset shift (per model)\n")
-    for model_slug, mm in metrics["models"].items():
-        lines.append(f"### {model_slug}\n")
-        lines.append("**Centroid cosine distances**\n")
-        for k, v in mm["dataset_shift"]["centroid_cos_dist"].items():
-            lines.append(f"- {k}: {v:.6f}")
-        lines.append("\n**kNN same-dataset neighbor rate (pooled corpora)**\n")
-        for k, v in mm["dataset_shift"]["knn_same_dataset_rate"].items():
-            lines.append(f"- {k}: {v:.4f}")
-        sp = mm["dataset_shift"]["source_probe"]
-        lines.append("\n**Dataset-source probe (PCA→logreg; macro-F1)**\n")
-        lines.append(f"- macro_f1: {sp['macro_f1']:.4f}")
-        lines.append(f"- pca_dims: {sp['pca_dims']} (explained_var_sum={sp['explained_var_ratio_sum']:.3f})\n")
-        lines.append(f"Figure: `figs/pca_scatter_{model_slug}.png`\n")
-
-    lines.append("## Model-space comparisons (ChEmbed vs nomic)\n")
-    for ds_name, info in metrics["model_space"].items():
-        lines.append(f"### {ds_name}\n")
-        lines.append(f"- shape: {info['shape']}")
-        lines.append(f"- linear_cka: {info['linear_cka']}")
-        lines.append(f"- spearman_distance_corr (n={DIST_CORR_N}): {info['spearman_distance_corr']:.4f}")
-        lines.append("- neighbor_overlap:")
-        for k, v in info["neighbor_overlap"].items():
-            lines.append(f"  - {k}: {v:.4f}")
-        lines.append(f"- notes: {info['notes']}\n")
-
-    (outdir / "report.md").write_text("\n".join(lines) + "\n")
+    # IMPORTANT: do not generate or overwrite any narrative markdown report here.
+    # This script writes only machine-readable metrics.json plus figure artifacts under analysis/figs/.
 
     print(f"Wrote: {outdir}")
 

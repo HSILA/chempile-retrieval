@@ -1,0 +1,7 @@
+{
+  "anchor": "anchors_mixed_chem",
+  "model": "BASF-AI/ChEmbed-vanilla",
+  "n": 2000,
+  "dim": 768,
+  "seed": 1337
+}

@@ -1,0 +1,252 @@
+{
+  "run_id": "20260331-041229",
+  "bundle_manifest": {
+    "seed": 1337,
+    "variant": "A3",
+    "device": "cpu",
+    "batch_size": 4,
+    "chemrxiv_dataset": "BASF-AI/ChemRxivRetrieval",
+    "general_anchor_datasets": [
+      "mteb/hotpotqa",
+      "mteb/nq"
+    ],
+    "sizes": {
+      "chemrxiv": {
+        "queries": 2000,
+        "corpus": 10000
+      },
+      "chempile": {
+        "queries": 2000,
+        "corpus": 10000
+      },
+      "anchors_mixed_chem": 2000,
+      "anchors_general": 2000
+    },
+    "generated_at": "2026-03-25T22:45:01.326536+00:00"
+  },
+  "bundle_run_summary": {
+    "models": {
+      "BASF-AI/ChEmbed-vanilla": {
+        "slug": "BASF-AI__ChEmbed-vanilla",
+        "chempile": {
+          "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/BASF-AI__ChEmbed-vanilla/chempile_A3",
+          "n_queries": 2000,
+          "n_corpus": 3185,
+          "dim": 768
+        },
+        "chemrxiv": {
+          "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/BASF-AI__ChEmbed-vanilla/chemrxiv",
+          "n_queries": 2000,
+          "n_corpus": 10000,
+          "dim": 768
+        },
+        "anchors_mixed_chem": {
+          "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/BASF-AI__ChEmbed-vanilla/anchors_mixed_chem",
+          "n": 2000,
+          "dim": 768
+        },
+        "anchors_general": {
+          "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/BASF-AI__ChEmbed-vanilla/anchors_general",
+          "n": 2000,
+          "dim": 768
+        }
+      },
+      "nomic-ai/nomic-embed-text-v1": {
+        "slug": "nomic-ai__nomic-embed-text-v1",
+        "chempile": {
+          "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/nomic-ai__nomic-embed-text-v1/chempile_A3",
+          "n_queries": 2000,
+          "n_corpus": 3185,
+          "dim": 768
+        },
+        "chemrxiv": {
+          "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/nomic-ai__nomic-embed-text-v1/chemrxiv",
+          "n_queries": 2000,
+          "n_corpus": 10000,
+          "dim": 768
+        },
+        "anchors_mixed_chem": {
+          "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/nomic-ai__nomic-embed-text-v1/anchors_mixed_chem",
+          "n": 2000,
+          "dim": 768
+        },
+        "anchors_general": {
+          "out": "/Users/hsila/Brewery/chempile-retrieval/results/geometry_bundle/nomic-ai__nomic-embed-text-v1/anchors_general",
+          "n": 2000,
+          "dim": 768
+        }
+      }
+    },
+    "seed": 1337,
+    "variant": "A3",
+    "device": "cpu",
+    "batch_size": 4,
+    "chemrxiv_dataset": "BASF-AI/ChemRxivRetrieval",
+    "general_anchor_datasets": [
+      "mteb/hotpotqa",
+      "mteb/nq"
+    ],
+    "sizes": {
+      "chemrxiv": {
+        "queries": 2000,
+        "corpus": 10000
+      },
+      "chempile": {
+        "queries": 2000,
+        "corpus": 10000
+      },
+      "anchors_mixed_chem": 2000,
+      "anchors_general": 2000
+    },
+    "generated_at": "2026-03-25T22:45:01.326536+00:00"
+  },
+  "models": {
+    "BASF-AI__ChEmbed-vanilla": {
+      "sanity": {
+        "chemrxiv_corpus_shape": [
+          10000,
+          768
+        ],
+        "chempile_corpus_shape": [
+          3185,
+          768
+        ],
+        "anchors_general_shape": [
+          2000,
+          768
+        ],
+        "norms_raw": {
+          "chemrxiv": {
+            "mean": 1.0,
+            "std": 6.385769069083835e-08,
+            "p95": 1.0000001192092896
+          },
+          "chempile": {
+            "mean": 1.0,
+            "std": 6.39559374349119e-08,
+            "p95": 1.0000001192092896
+          },
+          "anchors_general": {
+            "mean": 1.0,
+            "std": 6.474721914173642e-08,
+            "p95": 1.0000001192092896
+          }
+        }
+      },
+      "dataset_shift": {
+        "centroid_cos_dist": {
+          "chemrxiv_vs_chempile": 0.4136733412742615,
+          "chemrxiv_vs_anchors_general": 0.570705771446228,
+          "chempile_vs_anchors_general": 0.4742192029953003
+        },
+        "knn_same_dataset_rate": {
+          "k=10": 0.8813236746789594,
+          "k=50": 0.8291405992756009
+        },
+        "source_probe": {
+          "macro_f1": 0.9609179165347738,
+          "pca_dims": 64,
+          "explained_var_ratio_sum": 0.3655255138874054
+        },
+        "source_probe_length_only": {
+          "note": "N/A (bundle does not include raw texts for chemrxiv/chempile corpora; only anchors have texts.jsonl)."
+        }
+      },
+      "model_space": {}
+    },
+    "nomic-ai__nomic-embed-text-v1": {
+      "sanity": {
+        "chemrxiv_corpus_shape": [
+          10000,
+          768
+        ],
+        "chempile_corpus_shape": [
+          3185,
+          768
+        ],
+        "anchors_general_shape": [
+          2000,
+          768
+        ],
+        "norms_raw": {
+          "chemrxiv": {
+            "mean": 1.0,
+            "std": 6.810857655636937e-08,
+            "p95": 1.0000001192092896
+          },
+          "chempile": {
+            "mean": 1.0,
+            "std": 6.76512996733436e-08,
+            "p95": 1.0000001192092896
+          },
+          "anchors_general": {
+            "mean": 1.0,
+            "std": 6.780273764661615e-08,
+            "p95": 1.0000001192092896
+          }
+        }
+      },
+      "dataset_shift": {
+        "centroid_cos_dist": {
+          "chemrxiv_vs_chempile": 0.04501950740814209,
+          "chemrxiv_vs_anchors_general": 0.14593666791915894,
+          "chempile_vs_anchors_general": 0.1480175256729126
+        },
+        "knn_same_dataset_rate": {
+          "k=10": 0.9294501152453079,
+          "k=50": 0.8918445834705301
+        },
+        "source_probe": {
+          "macro_f1": 0.96913267209373,
+          "pca_dims": 64,
+          "explained_var_ratio_sum": 0.4896880090236664
+        },
+        "source_probe_length_only": {
+          "note": "N/A (bundle does not include raw texts for chemrxiv/chempile corpora; only anchors have texts.jsonl)."
+        }
+      },
+      "model_space": {}
+    }
+  },
+  "model_space": {
+    "chemrxiv_corpus": {
+      "shape": [
+        10000,
+        768
+      ],
+      "linear_cka": null,
+      "neighbor_overlap": {
+        "k=10": 0.00099,
+        "k=50": 0.004754
+      },
+      "spearman_distance_corr": 0.0017417952099031604,
+      "notes": "linear_cka computed only if N<=4000 (otherwise skipped due to O(N^2) memory)."
+    },
+    "chempile_corpus": {
+      "shape": [
+        3185,
+        768
+      ],
+      "linear_cka": 0.04159276714969064,
+      "neighbor_overlap": {
+        "k=10": 0.003610675039246468,
+        "k=50": 0.016062794348508633
+      },
+      "spearman_distance_corr": -0.009360627419609331,
+      "notes": "linear_cka computed only if N<=4000 (otherwise skipped due to O(N^2) memory)."
+    },
+    "anchors_general_corpus": {
+      "shape": [
+        2000,
+        768
+      ],
+      "linear_cka": 0.866883976633668,
+      "neighbor_overlap": {
+        "k=10": 0.6417,
+        "k=50": 0.6402599999999999
+      },
+      "spearman_distance_corr": 0.6511797099107516,
+      "notes": "linear_cka computed only if N<=4000 (otherwise skipped due to O(N^2) memory)."
+    }
+  }
+}
