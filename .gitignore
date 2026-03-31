@@ -16,3 +16,9 @@ __pycache__/
 # NOTE: results/ is intentionally tracked in git for this project.
 # Do not ignore it.
 
+*/DECISIONS.md
+*/PLAN.md
+DECISIONS.md
+PLAN.md
+TODO.md
+*/TODO.md
